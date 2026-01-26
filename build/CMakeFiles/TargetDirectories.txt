@@ -1,0 +1,7 @@
+/home/gabriel/projects/NWSApi/build/CMakeFiles/nwsapi.dir
+/home/gabriel/projects/NWSApi/build/CMakeFiles/edit_cache.dir
+/home/gabriel/projects/NWSApi/build/CMakeFiles/rebuild_cache.dir
+/home/gabriel/projects/NWSApi/build/CMakeFiles/list_install_components.dir
+/home/gabriel/projects/NWSApi/build/CMakeFiles/install.dir
+/home/gabriel/projects/NWSApi/build/CMakeFiles/install/local.dir
+/home/gabriel/projects/NWSApi/build/CMakeFiles/install/strip.dir

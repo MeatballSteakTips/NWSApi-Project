@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/gabriel/projects/NWSApi/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

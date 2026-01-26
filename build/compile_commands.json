@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/gabriel/projects/NWSApi/build",
+  "command": "/usr/bin/c++ -g -o CMakeFiles/nwsapi.dir/main.cpp.o -c /home/gabriel/projects/NWSApi/main.cpp",
+  "file": "/home/gabriel/projects/NWSApi/main.cpp",
+  "output": "/home/gabriel/projects/NWSApi/build/CMakeFiles/nwsapi.dir/main.cpp.o"
+},
+{
+  "directory": "/home/gabriel/projects/NWSApi/build",
+  "command": "/usr/bin/c++ -g -o CMakeFiles/nwsapi.dir/tableLookup.cpp.o -c /home/gabriel/projects/NWSApi/tableLookup.cpp",
+  "file": "/home/gabriel/projects/NWSApi/tableLookup.cpp",
+  "output": "/home/gabriel/projects/NWSApi/build/CMakeFiles/nwsapi.dir/tableLookup.cpp.o"
+}
+]
