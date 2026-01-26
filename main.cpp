@@ -90,16 +90,16 @@ std::string getWeather(const std::string& url) {
     return response;
 }
 
-void printForecast(const std::string& forecastJSON, std::string& countyArg) {
+void printForecast(const std::string& forecastJSON, std::string& countyArg, std::string& stateArg) {
     nlohmann::json root = nlohmann::json::parse(forecastJSON);
 
     //Now to find the data in the JSON code pulled from NWS
     if(!root.contains("properties") || !root["properties"].contains("periods")) {
-        std::cerr << "Unexpected JSON Structure - no 'periods'";
+        std::cerr << "Unexpected JSON Structure - Missing properties/periods";
         return;
     }
 
-    std::cout << "---NWS Forecast for " << countyArg << " County--\n"
+    std::cout << "---NWS Forecast for " << countyArg << " County " + stateArg + "---\n"
               << "Day                    |  Temp  | Forecast\n"
               << "---------------------------------------------------------\n";
 
@@ -123,10 +123,31 @@ void printForecast(const std::string& forecastJSON, std::string& countyArg) {
     }
     //Added detailed cast for the night of. This is what the append function is for
     std::vector<std::string> appendedCast = wrapText(detailedCast, 80);
-    std::cout << "\n\n Forecast for tonight: \n";
+    std::cout << "\n\nForecast for tonight: \n";
     for(const auto& line : appendedCast) {
-        std::cout << "  " << line << '\n';
+        std::cout << " " << line << '\n';
     }
+}
+
+void printAlerts(const std::string& alertsJSON, std::string& countyArg, std::string& stateArg) {
+    nlohmann::json root = nlohmann::json::parse(alertsJSON);
+
+    if(!root.contains("features")) {
+        std::cerr << "Unexpected JSON Structure, 'features' not found.";
+        return;
+    }
+
+    std::cout << "\n\n----Active Alerts for " + countyArg + " County " + stateArg + "----\n";
+
+    std::string alertCast;
+    const auto& features = root["features"];
+    const auto& feature = features[0]; //For my own memory, this is an array and needs to be done this way. Could use for loop, but there's only one anyway
+    const auto& properties = feature["properties"];
+
+    std::string headLine = properties.value("headline", "?");
+    std::string description = properties.value("description", "?");
+
+    std::cout << "" + headLine + "\n\n" + description + "\n";
 }
 
 
@@ -139,12 +160,10 @@ int main(int argc, char **argv) {
 
     std::string countyArg = argv[1];
     std::string stateArg = "";
-    bool stateOverride = false;
 
     //Check for State override Arg
     if(argc == 3) {
         stateArg = argv[2];
-        stateOverride = true;
         std::cout << "State Override\n";
     }
 
@@ -171,8 +190,11 @@ int main(int argc, char **argv) {
                                   << "\nLongitude: " << rec->longitude << "\n\n";
     std::string currentLong = std::to_string(rec->latitude);
     std::string currentLat = std::to_string(rec->longitude);
+    std::string currentZone = rec->zoneCode;
+    std::string currentState = rec->stateName;
 
     std::string primaryURL = "https://api.weather.gov/points/" + currentLong + "," + currentLat;
+    std::string alertURL = "https://api.weather.gov/alerts/active/zone/" + currentZone;
 
     std::string pointResp = getWeather(primaryURL);
     nlohmann::json pointJson = nlohmann::json::parse(pointResp);
@@ -183,10 +205,11 @@ int main(int argc, char **argv) {
 
     //Now get forecast
     std::string forecastResp = getWeather(forecastURL);
-    printForecast(forecastResp, countyArg);
+    printForecast(forecastResp, countyArg, stateArg);
 
-    //printForecast(getWeather(primaryURL));
-    //std::cout << getWeather(primaryURL);
+    //now get Alerts
+    std::string alertResp = getWeather(alertURL);
+    printAlerts(alertResp, countyArg, stateArg);
 
     return 0;
 }
