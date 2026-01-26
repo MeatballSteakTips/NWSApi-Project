@@ -8,6 +8,7 @@
 struct countyRecord {
     std::string countyName;
     std::string stateName;
+    std::string zoneCode;
     double latitude;
     double longitude;
 };

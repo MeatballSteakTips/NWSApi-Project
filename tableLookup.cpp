@@ -66,6 +66,10 @@ std::vector<countyRecord> loadCountyCsv(const std::string& path) {
         countyRecord rec;
         rec.countyName = fields[5];
         rec.stateName = fields[0];
+        //Adding Z to Zonecode
+        std::string tempCode = fields[6];
+        tempCode.insert(2, 1, 'Z');
+        rec.zoneCode = tempCode;
 
         try {
             rec.latitude = std::stod(fields[8]);

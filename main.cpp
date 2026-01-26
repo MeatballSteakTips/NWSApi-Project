@@ -77,8 +77,7 @@ std::string getWeather(const std::string& url) {
     curl_easy_setopt(handler, CURLOPT_URL, url.c_str());
     curl_easy_setopt(handler, CURLOPT_WRITEFUNCTION, writeCallback);
     curl_easy_setopt(handler, CURLOPT_WRITEDATA, &response);
-    curl_easy_setopt(handler, CURLOPT_USERAGENT, "GC_Weather-app/0.1 (+https://example.com/myapp)");
-
+    curl_easy_setopt(handler, CURLOPT_USERAGENT, "NWSApi-Project/0.2 (+https://example.com/myapp)");
     curl_easy_setopt(handler, CURLOPT_TIMEOUT, 10L);
 
     CURLcode rc = curl_easy_perform(handler);
@@ -134,7 +133,7 @@ void printForecast(const std::string& forecastJSON, std::string& countyArg) {
 int main(int argc, char **argv) {
     //Checking for Arguments
     if(argc < 2) {
-        std::cerr << "Usage: " << argv[0] << "<CountyName>, Optional: <State(XX)>\n";
+        std::cerr << "Usage: " << argv[0] << " <CountyName> <StateName(XX)>\n";
         return 1;
     }
 
@@ -167,6 +166,7 @@ int main(int argc, char **argv) {
 
     std::cout << "Found County: " << rec->countyName
                                   << (rec->stateName.empty() ? "" : (" (" + rec->stateName + ")"))
+                                  << "\nZone: " << rec->zoneCode
                                   << "\nLatitude: " << rec->latitude
                                   << "\nLongitude: " << rec->longitude << "\n\n";
     std::string currentLong = std::to_string(rec->latitude);
