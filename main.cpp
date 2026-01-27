@@ -132,8 +132,8 @@ void printForecast(const std::string& forecastJSON, std::string& countyArg, std:
 void printAlerts(const std::string& alertsJSON, std::string& countyArg, std::string& stateArg) {
     nlohmann::json root = nlohmann::json::parse(alertsJSON);
 
-    if(!root.contains("features")) {
-        std::cerr << "Unexpected JSON Structure, 'features' not found.";
+    if(!root.contains("features") || !root["features"].contains("properties")) {
+        std::cout << "\nNo Active Alerts at this time for " + countyArg + " County, " + stateArg + ".\n\n";
         return;
     }
 
