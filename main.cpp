@@ -136,10 +136,6 @@ void printAlerts(const std::string& alertsJSON, std::string& countyArg, std::str
         std::cerr << "Unexpected JSON Structure - Missing features from root";
         return;
     }
-
-    //Check for no Alerts
-
-
     std::cout << "\n\n----Active Alerts for " + countyArg + " County " + stateArg + "----\n";
 
     std::string alertCast;
@@ -159,7 +155,6 @@ void printAlerts(const std::string& alertsJSON, std::string& countyArg, std::str
 
     std::cout << "" + headLine + "\n\n" + description + "\n\n";
 }
-
 
 int main(int argc, char **argv) {
     //Checking for Arguments
