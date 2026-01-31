@@ -99,7 +99,7 @@ void printForecast(const std::string& forecastJSON, std::string& countyArg, std:
         return;
     }
 
-    std::cout << "---NWS Forecast for " << countyArg << " County " + stateArg + "---\n"
+    std::cout << "---NWS 7-day Forecast for " << countyArg << " County " + stateArg + "---\n"
               << "Day                    |  Temp  | Forecast\n"
               << "---------------------------------------------------------\n";
 
@@ -123,31 +123,41 @@ void printForecast(const std::string& forecastJSON, std::string& countyArg, std:
     }
     //Added detailed cast for the night of. This is what the append function is for
     std::vector<std::string> appendedCast = wrapText(detailedCast, 80);
-    std::cout << "\n\nForecast for tonight: \n";
+    std::cout << "\n\n----Forecast for tonight in " + countyArg + " " + stateArg + "----\n";
     for(const auto& line : appendedCast) {
-        std::cout << " " << line << '\n';
+        std::cout << line << '\n';
     }
 }
 
 void printAlerts(const std::string& alertsJSON, std::string& countyArg, std::string& stateArg) {
     nlohmann::json root = nlohmann::json::parse(alertsJSON);
 
-    if(!root.contains("features") || !root["features"].contains("properties")) {
-        std::cout << "\nNo Active Alerts at this time for " + countyArg + " County, " + stateArg + ".\n\n";
+    if(!root.contains("features")) {
+        std::cerr << "Unexpected JSON Structure - Missing features from root";
         return;
     }
+
+    //Check for no Alerts
+
 
     std::cout << "\n\n----Active Alerts for " + countyArg + " County " + stateArg + "----\n";
 
     std::string alertCast;
     const auto& features = root["features"];
-    const auto& feature = features[0]; //For my own memory, this is an array and needs to be done this way. Could use for loop, but there's only one anyway
-    const auto& properties = feature["properties"];
+
+    //Check if features is empty, which means no Alerts
+    if(!features.is_array() || features.empty()) {
+        std::cout << "No alerts at this time\n\n";
+        return;
+    }
+
+    const auto& featureArray = features[0]; //For my own memory, this is an array and needs to be done this way. Could use for loop, but there's only one anyway
+    const auto& properties = featureArray["properties"];
 
     std::string headLine = properties.value("headline", "?");
     std::string description = properties.value("description", "?");
 
-    std::cout << "" + headLine + "\n\n" + description + "\n";
+    std::cout << "" + headLine + "\n\n" + description + "\n\n";
 }
 
 
@@ -188,6 +198,7 @@ int main(int argc, char **argv) {
                                   << "\nZone: " << rec->zoneCode
                                   << "\nLatitude: " << rec->latitude
                                   << "\nLongitude: " << rec->longitude << "\n\n";
+    if(stateArg.empty()) stateArg = rec->stateName;
     std::string currentLong = std::to_string(rec->latitude);
     std::string currentLat = std::to_string(rec->longitude);
     std::string currentZone = rec->zoneCode;
